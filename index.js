@@ -27,10 +27,8 @@ function UpGen(options) {
 }
 
 UpGen.prototype.define = function (_path) {
-	var parts = [];
 	var path_parts = _path.split('/');
-	var method_path;
-	_path = path.join(this.root, _path);
+	var parts = [];
 	
 	path_parts.forEach(function (e, i) {
 		if (e.length && !e.match(/^(:|\/)/)) {
@@ -42,27 +40,30 @@ UpGen.prototype.define = function (_path) {
 		}
 	});
 	// path method name
-	method_path = parts.concat('path').join('_');
+	var method_path = parts.concat('path').join('_');
 	// assign path getter
 	this[method_path] = function () {
-		var	args = Array.prototype.slice.call(arguments),
-		match,
-		placeholders = [],
-		re = /(?:\:\w+)/g;
+		var	args = Array.prototype.slice.call(arguments);
+		var placeholders = [];
+		var regex = /(?:\:\w+)/g;
+		var match;
+		var template_path = path.join(this.root, _path);
 
-		while ((match = re.exec(_path)) !== null) {
+		while ((match = regex.exec(_path)) !== null) {
 			placeholders.push(match[0]);
 		}
 
 		placeholders.forEach(function (placeholder, i) {
 			if (args[i])
-				_path = _path.replace(placeholder, args[i]);
+				template_path = template_path.replace(placeholder, args[i]);
 		});
 
-		return _path;
+		return template_path;
 	};
+	// url method name
+	var method_url = parts.concat('url').join('_');
 	// assign url getter
-	this[parts.concat('url').join('_')] = function () {
+	this[method_url] = function () {
 		return url.format({
 			protocol: this.protocol, 
 			auth: this.auth, 
@@ -70,7 +71,7 @@ UpGen.prototype.define = function (_path) {
 			port: this.port,
 			host: this.host,
 			// arguments applied to this path getter
-			pathname: path.join(this[method_path].apply(null, arguments)),
+			pathname: this[method_path].apply(this, arguments),
 			search: this.search, 
 			query: this.query, 
 			hash: this.hash

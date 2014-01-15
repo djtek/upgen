@@ -21,6 +21,9 @@ function UpGen(options) {
 	this.hash = options.hash;
 	this.root = options.root||'/';
 	// this.paths = [];
+	if (options.add && typeof options.add === 'object') {
+		this.add(options.add);
+	}
 }
 
 UpGen.prototype.define = function (_path) {

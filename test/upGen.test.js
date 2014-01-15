@@ -24,7 +24,7 @@ exports.upGen = {
 					}
 				}
 			},
-			blogs: ':null'
+			blogs: ':bid'
 		}
 		callback();
 	},
@@ -54,6 +54,10 @@ exports.upGen = {
 		test.equal(this.upGen.user_blog_post_comments_path(1,2,3), '/users/1/blogs/2/posts/3/comments');
 		test.equal(this.upGen.user_blog_post_comment_path(1,2,3,4), '/users/1/blogs/2/posts/3/comments/4');
 		test.equal(this.upGen.user_blog_post_points_path(1,2,3), '/users/1/blogs/2/posts/3/points');
+		
+		test.equal(this.upGen.blogs_path(), '/blogs');
+		test.equal(this.upGen.blog_path(1), '/blogs/1');
+		
 		test.done();
 	}, 
 	testUrls: function (test) {
@@ -116,6 +120,30 @@ exports.testWithAllUrlOptions = function (test) {
 	upGen.add({
 		guides: ':gid',
 		issues: ':iid'
+	});
+	test.equal(upGen.guides_url(), 'https://foo:bar@local/api/guides?foo=bar#bar');
+	test.equal(upGen.guide_url(1), 'https://foo:bar@local/api/guides/1?foo=bar#bar');
+	test.equal(upGen.issues_url(), 'https://foo:bar@local/api/issues?foo=bar#bar');
+	test.equal(upGen.issue_url(1), 'https://foo:bar@local/api/issues/1?foo=bar#bar');
+	
+	test.done()
+}
+
+exports.testUpGenAddThroughOptions = function (test) {
+	var upGen = new UpGen({
+		protocol: 'https', 
+		auth: 'foo:bar', 
+		hostname: 'local', 
+		port: 80,
+		host: 'local',
+		search: 'foo=bar', 
+		query: 'foo', 
+		hash: 'bar',
+		root: 'api',
+		add: {
+			guides: ':gid',
+			issues: ':iid'
+		}
 	});
 	test.equal(upGen.guides_url(), 'https://foo:bar@local/api/guides?foo=bar#bar');
 	test.equal(upGen.guide_url(1), 'https://foo:bar@local/api/guides/1?foo=bar#bar');

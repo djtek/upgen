@@ -73,6 +73,31 @@ exports.upGen = {
 		test.equal(this.upGen.user_blog_post_points_url(1,2,3), 'http://localhost:3000/users/1/blogs/2/posts/3/points');
 		test.done()
 	},
+	testUnderscoredKeys: function (test) {
+		this.upGen.add({
+			about_pages: ':ap_id',
+			site_pages: ':sp_id'
+		});
+		test.equal(this.upGen.about_pages_path(), '/about_pages')
+		test.equal(this.upGen.about_page_path(1), '/about_pages/1')
+
+		test.equal(this.upGen.site_pages_path(), '/site_pages')
+		test.equal(this.upGen.site_page_path(1), '/site_pages/1')
+
+		test.done()
+	},
+	testSingularKeys: function (test) {
+		this.upGen.add({
+			page: ':pid',
+			issue: ':iid'
+		});
+		test.ok(!this.upGen.pages_path)
+		test.equal(this.upGen.page_path(1), '/page/1')
+		test.ok(!this.upGen.issues_path)
+		test.equal(this.upGen.issue_path(1), '/issue/1')
+
+		test.done()
+	}
 }
 exports.testWithCustomOptions = function (test) {
 	var upGen = new UpGen({

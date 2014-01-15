@@ -38,8 +38,8 @@ UpGen.prototype.define = function (_path) {
 				parts.push(pluralize.singular(e));
 			} else {
 				parts.push(e);
-			};
-		};
+			}
+		}
 	});
 	// path method name
 	method_path = parts.concat('path').join('_');
@@ -50,9 +50,9 @@ UpGen.prototype.define = function (_path) {
 		placeholders = [],
 		re = /(?:\:\w+)/g;
 
-		while (match = re.exec(_path)) {
+		while ((match = re.exec(_path)) !== null) {
 			placeholders.push(match[0]);
-		};
+		}
 
 		placeholders.forEach(function (placeholder, i) {
 			if (args[i])
@@ -75,8 +75,8 @@ UpGen.prototype.define = function (_path) {
 			query: this.query, 
 			hash: this.hash
 		});
-	}
-}
+	};
+};
 
 UpGen.prototype.add = function (obj) {
 	for(var k in obj) {
@@ -87,16 +87,16 @@ UpGen.prototype.add = function (obj) {
 			if (typeof obj[k] === 'object') {
 				var _obj = obj[k];
 				var __obj = {};
-				for(var k in _obj) {
-					__obj[path.join(_path, k)] = _obj[k];
-				};
+				for(var _k in _obj) {
+					__obj[path.join(_path, _k)] = _obj[_k];
+				}
 				this.add(__obj);
 			} else if (typeof obj[k] === 'string') {
 				// this.paths.push(path.join(_path, obj[k]))
 				this.define(path.join(_path, obj[k]));
-			};
-		};
-	};
-}
+			}
+		}
+	}
+};
 
 module.exports = UpGen;
